@@ -67,37 +67,37 @@ CorrelatedGBM.last <- function(N, S0, mu, sigma, cor.mat) {
 #Multiple simulations of LAST PRICE function
 #store each row of LAST PRICES in matrix
 N.5 <- 5
-rrs.fwd.last.price.mc.5 <- do.call(rbind, lapply(1:10000, function(x) CorrelatedGBM.last(N=N.5, prices.vec, mean.vec, sigma.vec, cor.mat)))
-colnames(rrs.fwd.last.price.mc.5) <- c("WTI", "COPPER", "GOLD")
+port.fwd.last.price.mc.5 <- do.call(rbind, lapply(1:10000, function(x) CorrelatedGBM.last(N=N.5, prices.vec, mean.vec, sigma.vec, cor.mat)))
+colnames(port.fwd.last.price.mc.5) <- c("WTI", "COPPER", "GOLD")
 #convert matrix to data.frame
-rrs.fwd.last.price.mc.df.5 <- data.frame(rrs.fwd.last.price.mc.5)
-rrs.fwd.last.price.mc.mtm.5 <- data.frame(rrs.fwd.last.price.mc.5)
-quantile(rrs.fwd.last.price.mc.5[,1], c(.05, .01)) #95% and 99% quantiles: WTI
-quantile(rrs.fwd.last.price.mc.5[,2], c(.05, .01)) #95% and 99% quantiles: COPPER
-quantile(rrs.fwd.last.price.mc.5[,3], c(.05, .01)) #95% and 99% quantiles: GOLD
+port.fwd.last.price.mc.df.5 <- data.frame(port.fwd.last.price.mc.5)
+port.fwd.last.price.mc.mtm.5 <- data.frame(port.fwd.last.price.mc.5)
+quantile(port.fwd.last.price.mc.5[,1], c(.05, .01)) #95% and 99% quantiles: WTI
+quantile(port.fwd.last.price.mc.5[,2], c(.05, .01)) #95% and 99% quantiles: COPPER
+quantile(port.fwd.last.price.mc.5[,3], c(.05, .01)) #95% and 99% quantiles: GOLD
 
 
 strikes <- c(75, 410, 2675)
 size <- c(1000, 100, 2)
 
-rrs.fwd.last.price.mc.mtm.strikes.5 <- sweep(rrs.fwd.last.price.mc.mtm.5, 2, strikes, '-')  #negative because sweep subtracts strikes from prices
-rrs.fwd.last.price.mc.mtm.strikes.total.5 <- sweep(rrs.fwd.last.price.mc.mtm.strikes.5, 2, size, '*')
-rrs.fwd.last.price.mc.mtm.strikes.5$mtm.total <- rowMeans(rrs.fwd.last.price.mc.mtm.strikes.5)
-quantile(rrs.fwd.last.price.mc.mtm.strikes.5[,1], c(.05, .01))
-rrs.fwd.last.price.mc.mtm.strikes.total.5$mtm.total <- rowSums(rrs.fwd.last.price.mc.mtm.strikes.total.5)
-tail(rrs.fwd.last.price.mc.mtm.strikes.5)
-tail(rrs.fwd.last.price.mc.mtm.strikes.total.5)
+port.fwd.last.price.mc.mtm.strikes.5 <- sweep(port.fwd.last.price.mc.mtm.5, 2, strikes, '-')  #negative because sweep subtracts strikes from prices
+port.fwd.last.price.mc.mtm.strikes.total.5 <- sweep(port.fwd.last.price.mc.mtm.strikes.5, 2, size, '*')
+port.fwd.last.price.mc.mtm.strikes.5$mtm.total <- rowMeans(port.fwd.last.price.mc.mtm.strikes.5)
+quantile(port.fwd.last.price.mc.mtm.strikes.5[,1], c(.05, .01))
+port.fwd.last.price.mc.mtm.strikes.total.5$mtm.total <- rowSums(port.fwd.last.price.mc.mtm.strikes.total.5)
+tail(port.fwd.last.price.mc.mtm.strikes.5)
+tail(port.fwd.last.price.mc.mtm.strikes.total.5)
 
 
 #5 DAY VAR GRAPHs
 #MtM historgram with VaR calculations
-quantile(rrs.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, c(.05, .01))
+quantile(port.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, c(.05, .01))
 
 
-(var.mtm.total.hist.5 <- ggplot(rrs.fwd.last.price.mc.mtm.strikes.total.5, aes(mtm.total)) + geom_histogram(fill="blue", bins = 100) + scale_x_continuous(labels = scales::dollar, breaks = seq(from=-50000, to = 50000, by=5000)) 
+(var.mtm.total.hist.5 <- ggplot(port.fwd.last.price.mc.mtm.strikes.total.5, aes(mtm.total)) + geom_histogram(fill="blue", bins = 100) + scale_x_continuous(labels = scales::dollar, breaks = seq(from=-50000, to = 50000, by=5000)) 
   + xlab("MtM value") + ylab("") + labs(title = "Portfolio Value at Risk, 5 day") 
-  + geom_vline(xintercept = quantile(rrs.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, .05), color = "black") 
-  + annotate(geom = "text", label = paste("95% VaR =", scales::dollar(quantile(rrs.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, .05))), x=quantile(rrs.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, .05), y=400, vjust=1, hjust=-.05) 
-  + geom_vline(xintercept = quantile(rrs.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, .01), color = "red") 
-  + annotate(geom = "text", color = "red", label = paste("99% VaR =", scales::dollar(quantile(rrs.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, .01))), x=quantile(rrs.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, .01), y=300, vjust=1, hjust=1))
+  + geom_vline(xintercept = quantile(port.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, .05), color = "black") 
+  + annotate(geom = "text", label = paste("95% VaR =", scales::dollar(quantile(port.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, .05))), x=quantile(port.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, .05), y=400, vjust=1, hjust=-.05) 
+  + geom_vline(xintercept = quantile(port.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, .01), color = "red") 
+  + annotate(geom = "text", color = "red", label = paste("99% VaR =", scales::dollar(quantile(port.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, .01))), x=quantile(port.fwd.last.price.mc.mtm.strikes.total.5$mtm.total, .01), y=300, vjust=1, hjust=1))
 
