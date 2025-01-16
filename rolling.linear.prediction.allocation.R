@@ -16,7 +16,7 @@ stats <- function(x) {
 
 
 n.months <- 24   #NUMBER OF MONTHS FOR EACH STEP IN ROLLING REGRESSION
-spy.pred.lead.roll.lm2 <- rollapplyr(df.loop, width = n.months, FUN = stats, by.column = FALSE)  #APPLY REGRESSION FUNCTION IN ROLLING 24 MONTH STEPS
+spy.pred.lead.roll.lm2 <- rollapplyr(df.loop, width = n.months, FUN = stats, by.column = FALSE)  #APPLY REGRESSION FUNCTION IN ROLLING 24 MONTH WINDOWS
 tail(spy.pred.lead.roll.lm2)
 
 
