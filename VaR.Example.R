@@ -18,6 +18,20 @@ rownames(cor.mat) = c("WTI", "COPPER", "GOLD")
 colnames(cor.mat) = c("WTI", "COPPER", "GOLD")
 
 
+#Simulation functions
+#Single price simulation
+GBM <- function(N, sigma, mu, S0, Wt = NULL) {
+  if (is.null(Wt)) {
+    Wt <- cumsum(rnorm(N, 0, 1))  #cumulative Brownian motion
+  }  
+  t <- (1:N)/365   
+  drift <- (mu - 0.5*(sigma^2)) * t
+  random <- sigma * Wt
+  St = S0 * exp(drift + random)   #drift = corrected drift term, random = random Brownian motion scaled by volatility
+  return(St)
+}
+
+
 #Multiple correlated prices simulation
 CorrelatedGBM <- function(N, S0, mu, sigma, cor.mat) {
   
